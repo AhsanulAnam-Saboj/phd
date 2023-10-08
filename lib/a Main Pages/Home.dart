@@ -4,11 +4,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:phd/Actions/CurrentUser.dart';
+import 'package:phd/a%20Main%20Pages/Menu%20Page.dart';
 import 'package:phd/pages/Account.dart';
 
 import 'package:phd/pages/ClickTopost.dart';
 import 'package:phd/pages/EditPost.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+import '../pages/loginpage.dart';
 
 String monthName(String m) {
   switch (m) {
@@ -90,8 +93,7 @@ class Posts {
   }
 
   Future getImageCamera() async {
-    final XFile? selectedPhotos =
-        await ImagePicker().pickImage(source: ImageSource.camera);
+    final XFile? selectedPhotos = await ImagePicker().pickImage(source: ImageSource.camera);
 
     if (selectedPhotos!.path.isNotEmpty) {
       itemList.add(selectedPhotos);
@@ -129,94 +131,77 @@ class _HomeState extends State<Home> {
                     backgroundColor: Colors.grey[900],
                     centerTitle: true,
                     title: const Row(children: [
-                      Text('PHD',
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 20))
+                      Text('PHD', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20))
                     ]),
                     bottom: PreferredSize(
                       preferredSize: const Size.fromHeight(50.0),
                       child: Center(
-                        child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        child: Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+                          Column(children: [
+                            IconButton(
+                                onPressed: () {
+                                  Navigator.push(context, MaterialPageRoute(builder: (context) => const Home()));
+                                },
+                                color: Colors.white,
+                                icon: const Icon(Icons.rss_feed, size: 25)),
+                            const Text('Feed', style: TextStyle(color: Colors.white))
+                          ]),
+                          Column(children: [
+                            IconButton(
+                              onPressed: () {},
+                              color: Colors.white,
+                              icon: const Icon(Icons.calendar_today, size: 25),
+                            ),
+                            const Text('Appointment', style: TextStyle(color: Colors.white))
+                          ]),
+                          Column(children: [
+                            IconButton(
+                              onPressed: () {},
+                              color: Colors.white,
+                              icon: const Icon(Icons.medical_services, size: 25),
+                            ),
+                            const Text('Medicines', style: TextStyle(color: Colors.white))
+                          ]),
+                          Column(children: [
+                            IconButton(
+                              onPressed: () {
+                                Navigator.push(context, MaterialPageRoute(builder: (context) => const Profile()));
+                              },
+                              color: Colors.white,
+                              icon: const Icon(Icons.account_circle, size: 25),
+                            ),
+                            const Text('Account', style: TextStyle(color: Colors.white))
+                          ]),
+                          Column(
                             children: [
-                              Column(children: [
-                                IconButton(
-                                    onPressed: () {
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) => const Home()));
-                                    },
-                                    color: Colors.white,
-                                    icon: const Icon(Icons.rss_feed, size: 25)),
-                                const Text('Feed',
-                                    style: TextStyle(color: Colors.white))
-                              ]),
-                              Column(children: [
-                                IconButton(
-                                  onPressed: () {},
-                                  color: Colors.white,
-                                  icon: const Icon(Icons.calendar_today,
-                                      size: 25),
-                                ),
-                                const Text('Appointment',
-                                    style: TextStyle(color: Colors.white))
-                              ]),
-                              Column(children: [
-                                IconButton(
-                                  onPressed: () {},
-                                  color: Colors.white,
-                                  icon: const Icon(Icons.medical_services,
-                                      size: 25),
-                                ),
-                                const Text('Medicines',
-                                    style: TextStyle(color: Colors.white))
-                              ]),
-                              Column(children: [
-                                IconButton(
-                                  onPressed: () {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) => const Profile()));
-                                  },
-                                  color: Colors.white,
-                                  icon: const Icon(Icons.account_circle,
-                                      size: 25),
-                                ),
-                                const Text('Account',
-                                    style: TextStyle(color: Colors.white))
-                              ]),
-                              Column(children: [
-                                IconButton(
-                                  onPressed: () {},
-                                  color: Colors.white,
-                                  icon: const Icon(Icons.menu, size: 25),
-                                ),
-                                const Text('Menu',
-                                    style: TextStyle(color: Colors.white))
-                              ])
-                            ]),
+                              PopupMenuButton(
+                                icon: const Icon(Icons.menu, color: Colors.white, size: 25),
+                                itemBuilder: (context) => [
+                                  PopupMenuItem(
+                                      onTap: () {
+                                        FirebaseAuth.instance.signOut();
+                                        Navigator.push(
+                                            context, MaterialPageRoute(builder: (context) => LoginScreen()));
+                                      },
+                                      child: const Text('Logout'))
+                                ],
+                              ),
+                              const Text('Menu', style: TextStyle(color: Colors.white))
+                            ],
+                          ),
+                        ]),
                       ),
                     ),
                     actions: [
                       Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 10.0),
                           child: Container(
-                              decoration: BoxDecoration(
-                                  color: Colors.grey[800],
-                                  shape: BoxShape.circle),
-                              child: IconButton(
-                                  onPressed: () {},
-                                  icon: const Icon(Icons.search)))),
+                              decoration: BoxDecoration(color: Colors.grey[800], shape: BoxShape.circle),
+                              child: IconButton(onPressed: () {}, icon: const Icon(Icons.search)))),
                     ]),
-                SliverToBoxAdapter(
-                    child: ClickToPost(currentUser: currentUser)),
+                SliverToBoxAdapter(child: ClickToPost(currentUser: currentUser)),
                 SliverList(
-                    delegate: SliverChildBuilderDelegate(childCount: 2,
-                        (context, index) {
+                    delegate: SliverChildBuilderDelegate(childCount: 2, (context, index) {
                   if (index == 0) {
                     return StreamBuilder(
                       stream: FirebaseFirestore.instance
@@ -225,10 +210,8 @@ class _HomeState extends State<Home> {
                           .collection('Post')
                           .snapshots(),
                       builder: (context, snapshot) {
-                        if (snapshot.connectionState ==
-                            ConnectionState.waiting) {
-                          return const Center(
-                              child: CircularProgressIndicator());
+                        if (snapshot.connectionState == ConnectionState.waiting) {
+                          return const Center(child: CircularProgressIndicator());
                         }
                         if (snapshot.hasData) {
                           var data = snapshot.data!.docs;
@@ -254,51 +237,37 @@ class _HomeState extends State<Home> {
                               post.Year = data["Year"];
 
                               return Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 5),
+                                padding: const EdgeInsets.symmetric(horizontal: 5),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
-                                        Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text(usrNme!,
-                                                  style: TextStyle(
-                                                      fontSize: 20,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      color: Colors.grey[900])),
-                                              const SizedBox(height: 6),
-                                              Text(
-                                                  '${post.Day} ${monthName(post.Month)} ${post.Year}',
-                                                  style: const TextStyle(
-                                                      overflow:
-                                                          TextOverflow.fade,
-                                                      fontSize: 12))
-                                            ]),
+                                        Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                                          Text(usrNme!,
+                                              style: TextStyle(
+                                                  fontSize: 20,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Colors.grey[900])),
+                                          const SizedBox(height: 6),
+                                          Text('${post.Day} ${monthName(post.Month)} ${post.Year}',
+                                              style: const TextStyle(overflow: TextOverflow.fade, fontSize: 12))
+                                        ]),
                                         PopupMenuButton<String>(
-                                          icon: const Icon(
-                                              Icons.more_horiz_outlined),
+                                          icon: const Icon(Icons.more_horiz_outlined),
                                           onSelected: (String newval) {
                                             setState(() {
-                                              selectvalue =
-                                                  newval; // Update the selected value
+                                              selectvalue = newval; // Update the selected value
                                             });
                                             if (selectvalue == 'Edit') {
                                               Navigator.push(
                                                 context,
                                                 MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      EditPost(post, index),
+                                                  builder: (context) => EditPost(post, index),
                                                 ),
                                               );
-                                            } else if (selectvalue ==
-                                                'Delete') {
+                                            } else if (selectvalue == 'Delete') {
                                               FirebaseFirestore.instance
                                                   .collection('Users')
                                                   .doc(usrEml)
@@ -307,43 +276,34 @@ class _HomeState extends State<Home> {
                                                   .delete();
                                             }
                                           },
-                                          itemBuilder: (BuildContext context) =>
-                                              <PopupMenuEntry<String>>[
+                                          itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
                                             const PopupMenuItem<String>(
-                                              value:
-                                                  'Edit', // Unique value for "Edit Post"
+                                              value: 'Edit', // Unique value for "Edit Post"
                                               child: Text('Edit Post'),
                                             ),
                                             const PopupMenuItem<String>(
-                                              value:
-                                                  'Delete', // Unique value for "Delete Post"
+                                              value: 'Delete', // Unique value for "Delete Post"
                                               child: Text('Delete Post'),
                                             ),
                                           ],
                                         ),
                                       ],
                                     ),
-                                    Divider(
-                                        thickness: 1,
-                                        height: 10,
-                                        color: Colors.grey[400]),
+                                    Divider(thickness: 1, height: 10, color: Colors.grey[400]),
                                     Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 8),
-                                      child: Text(post.SinglePostText,
-                                          style: const TextStyle(fontSize: 16)),
+                                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                                      child: Text(post.SinglePostText, style: const TextStyle(fontSize: 16)),
                                     ),
                                     const SizedBox(height: 10),
                                     GridView.builder(
                                       gridDelegate:
-                                          const SliverGridDelegateWithFixedCrossAxisCount(
-                                              crossAxisCount: 3),
+                                          const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3),
                                       shrinkWrap: true,
-                                      physics:
-                                          const NeverScrollableScrollPhysics(),
+                                      physics: const NeverScrollableScrollPhysics(),
                                       itemCount: post.itemList.length,
                                       itemBuilder: (context, ind) {
                                         print('${post.itemList[ind]} saboj');
+
                                         return FileItem(
                                           fileUrl: post.itemList[ind],
                                           fileName: 'File ${ind + 1}',
@@ -408,29 +368,18 @@ class _HomeState extends State<Home> {
                                       },
                                     ),
                                     Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
                                         if (post.ConsultantName != '')
-                                          Text(
-                                              'Consultant Name : ${post.ConsultantName}',
-                                              style: TextStyle(
-                                                  fontSize: 16,
-                                                  color: Colors.grey[900])),
+                                          Text('Consultant Name : ${post.ConsultantName}',
+                                              style: TextStyle(fontSize: 16, color: Colors.grey[900])),
                                         if (post.HospitalName != '')
-                                          Text(
-                                              'Hospital Name : ${post.HospitalName}',
-                                              style: TextStyle(
-                                                  fontSize: 16,
-                                                  color: Colors.grey[900])),
+                                          Text('Hospital Name : ${post.HospitalName}',
+                                              style: TextStyle(fontSize: 16, color: Colors.grey[900])),
                                         if (post.Expenditure != '')
-                                          Text(
-                                              'Total Expenditure : ${post.Expenditure} Tk',
-                                              style: TextStyle(
-                                                  fontSize: 16,
-                                                  color: Colors.grey[900])),
-                                        const Divider(
-                                            color: Colors.black, thickness: 1),
+                                          Text('Total Expenditure : ${post.Expenditure} Tk',
+                                              style: TextStyle(fontSize: 16, color: Colors.grey[900])),
+                                        const Divider(color: Colors.black, thickness: 1),
                                       ],
                                     ),
                                   ],

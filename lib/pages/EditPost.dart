@@ -7,7 +7,7 @@ import 'package:phd/addittional/CustomColors.dart';
 import 'package:phd/Actions/HospitalConsultant.dart';
 import 'package:phd/addittional/SinglePostDetails.dart';
 
-import 'Home.dart';
+import '../a Main Pages/Home.dart';
 
 class EditPost extends StatefulWidget {
   Posts editedpost = Posts();

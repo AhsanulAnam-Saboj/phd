@@ -3,7 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:phd/pages/loginpage.dart';
-import 'package:phd/pages/Home.dart';
+import 'package:phd/a%20Main%20Pages/Home.dart';
 import 'firebase_options.dart';
 
 Future main() async {

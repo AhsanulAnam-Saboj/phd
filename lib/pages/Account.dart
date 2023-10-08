@@ -5,7 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:phd/addittional/UserInfo.dart';
 
-import 'Home.dart';
+import '../a Main Pages/Home.dart';
 
 class Profile extends StatefulWidget {
   const Profile({super.key});

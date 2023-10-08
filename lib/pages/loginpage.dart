@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:phd/pages/ForgetPassword.dart';
-import 'package:phd/pages/Home.dart';
+import 'package:phd/a%20Main%20Pages/Home.dart';
 
 import 'Register.dart';
 

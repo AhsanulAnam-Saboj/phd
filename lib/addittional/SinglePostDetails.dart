@@ -6,7 +6,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:phd/pages/Home.dart';
+import 'package:phd/a%20Main%20Pages/Home.dart';
 
 class SinglePostDetails {
   String HospitalName = '';
@@ -30,46 +30,6 @@ class SinglePostDetails {
     required this.Time,
     required this.Year,
   });*/
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  String? usremail = FirebaseAuth.instance.currentUser!.email;
-
-  Future<String> _uploadFileToFirebase(File file, String fileName, String fileType) async {
-    Reference storageReference = FirebaseStorage.instance.ref().child('$usremail/$fileName');
-    UploadTask uploadTask = storageReference.putFile(file);
-    TaskSnapshot taskSnapshot = await uploadTask.whenComplete(() => {});
-    String downloadUrl = await taskSnapshot.ref.getDownloadURL();
-    return downloadUrl;
-  }
-
-  Future getImageGallery() async {
-    List<XFile>? selectedPhoto = await ImagePicker().pickMultiImage();
-    for (var file in selectedPhoto) {
-      File image = File(file.path);
-      String imageUrl = await _uploadFileToFirebase(image, file.name, 'images');
-      itemList.add(imageUrl);
-    }
-  }
-
-  Future getImageCamera() async {
-    XFile? selectedPhoto = await ImagePicker().pickImage(source: ImageSource.camera);
-    if (selectedPhoto!.path.isNotEmpty) {
-      File imageFile = File(selectedPhoto.path);
-      String imageUrl = await _uploadFileToFirebase(imageFile, selectedPhoto.name, 'images');
-      itemList.add(imageUrl);
-    }
-  }
-
-  Future pickFiles() async {
-    final selectedFiles = await FilePicker.platform.pickFiles(allowMultiple: true);
-    if (selectedFiles != null) {
-      for (var file in selectedFiles.files) {
-        File xFile = File(file.path!);
-        String fileUrl = await _uploadFileToFirebase(xFile, file.name, 'files');
-        itemList.add(fileUrl);
-      }
-    }
-  }
 
   Color getColor(String extension) {
     switch (extension) {
@@ -127,6 +87,7 @@ class SinglePostDetails {
     post.add(aPost);
   }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   fromFirestore(
     DocumentSnapshot<Map<String, dynamic>> snapshot,
     SnapshotOptions? options,
@@ -148,6 +109,47 @@ class SinglePostDetails {
       'time': DateTime.now(),
     };
   }
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  String? usremail = FirebaseAuth.instance.currentUser!.email;
+
+  Future<String> _uploadFileToFirebase(File file, String fileName, String fileType) async {
+    Reference storageReference = FirebaseStorage.instance.ref().child('$usremail/$fileName');
+    UploadTask uploadTask = storageReference.putFile(file);
+    TaskSnapshot taskSnapshot = await uploadTask.whenComplete(() => {});
+    String downloadUrl = await taskSnapshot.ref.getDownloadURL();
+    return downloadUrl;
+  }
+
+  Future getImageGallery() async {
+    List<XFile>? selectedPhoto = await ImagePicker().pickMultiImage();
+    for (var file in selectedPhoto) {
+      File image = File(file.path);
+      String imageUrl = await _uploadFileToFirebase(image, file.name, 'images');
+      itemList.add(imageUrl);
+    }
+  }
+
+  Future getImageCamera() async {
+    XFile? selectedPhoto = await ImagePicker().pickImage(source: ImageSource.camera);
+    if (selectedPhoto!.path.isNotEmpty) {
+      File imageFile = File(selectedPhoto.path);
+      String imageUrl = await _uploadFileToFirebase(imageFile, selectedPhoto.name, 'images');
+      itemList.add(imageUrl);
+    }
+  }
+
+  Future pickFiles() async {
+    final selectedFiles = await FilePicker.platform.pickFiles(allowMultiple: true);
+    if (selectedFiles != null) {
+      for (var file in selectedFiles.files) {
+        File xFile = File(file.path!);
+        String fileUrl = await _uploadFileToFirebase(xFile, file.name, 'files');
+        itemList.add(fileUrl);
+      }
+    }
+  }
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }
 
 SinglePostDetails singlePost = SinglePostDetails();

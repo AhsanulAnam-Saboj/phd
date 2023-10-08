@@ -1,16 +1,11 @@
-import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:open_file/open_file.dart';
-import 'package:phd/addittional/CustomColors.dart';
 import 'package:phd/Actions/HospitalConsultant.dart';
 import 'package:phd/addittional/SinglePostDetails.dart';
-import 'package:phd/pages/Home.dart';
+import 'package:phd/a%20Main%20Pages/Home.dart';
 
 class PostCreato extends StatefulWidget {
   const PostCreato({super.key});
@@ -71,7 +66,7 @@ class _PostCreatoState extends State<PostCreato> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => Home(),
+                          builder: (context) => const Home(),
                         ));
                   },
                   child: const Text(
@@ -171,7 +166,8 @@ class _PostCreatoState extends State<PostCreato> {
                         children: [
                           CachedNetworkImage(
                             imageUrl: singlePost.itemList[index],
-                            progressIndicatorBuilder: (context, url, progress) => CircularProgressIndicator(),
+                            progressIndicatorBuilder: (context, url, progress) =>
+                                const CircularProgressIndicator(),
                           ),
                           //Image.network(singlePost.itemList[index]),
                           /*Image.file(
