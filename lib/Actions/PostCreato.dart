@@ -18,27 +18,12 @@ class PostCreato extends StatefulWidget {
 }
 
 class _PostCreatoState extends State<PostCreato> {
-  //final DateTime today ;
-  String? usrname = FirebaseAuth.instance.currentUser!.email;
-
+  String? usremail = FirebaseAuth.instance.currentUser!.email;
   TextEditingController usedText = TextEditingController();
-  /////////////////////////////////////////////////////////////////////////////////////////////
-  Future<String> _uploadFileToFirebase(File file, String fileName) async {
-    Reference storageReference =
-        FirebaseStorage.instance.ref().child('Post/$fileName');
-    UploadTask uploadTask = storageReference.putFile(file);
-    TaskSnapshot taskSnapshot = await uploadTask.whenComplete(() => {});
-    String downloadUrl = await taskSnapshot.ref.getDownloadURL();
-    return downloadUrl;
-  }
 
-//////////////////////////////////////////////////////////////////////////////////////////////////
-  Future<void> _storeFileUrlsInFirestore(List<String> fileUrls) async {
-    FirebaseFirestore.instance
-        .collection('Users')
-        .doc(usrname)
-        .collection('Post')
-        .add({
+  /////////////////////////////////////////////////////////////////////////////////////////////////////
+  Future<void> _storeFileUrlsInFirestore(List<String> fileUrls, String s) async {
+    FirebaseFirestore.instance.collection('Users').doc(usremail).collection('Post').add({
       "file list": fileUrls,
       "SinglePost txt": singlePost.SinglePostText,
       "Hospital Name": singlePost.HospitalName,
@@ -50,8 +35,8 @@ class _PostCreatoState extends State<PostCreato> {
       'time': DateTime.now(),
     });
   }
+  /////////////////////////////////////////////////////////////////////////////////////////////////////
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////////
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -74,26 +59,13 @@ class _PostCreatoState extends State<PostCreato> {
                 TextButton(
                   onPressed: () async {
                     singlePost.addDateTime();
-                    var file;
-                    List<String> uploadUrls = [];
-                    for (file in singlePost.itemList) {
-                      File file0 = File(file);
-                      String url =
-                          await _uploadFileToFirebase(file0, file0.path);
-                      uploadUrls.add(url);
-                    }
-                    _storeFileUrlsInFirestore(uploadUrls);
                     singlePost.removeData();
-
                     Navigator.pop(context);
                     Navigator.pushReplacementNamed(context, '/home');
                   },
                   child: const Text(
                     'Post',
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16),
+                    style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16),
                   ),
                 ),
               ]),
@@ -104,8 +76,7 @@ class _PostCreatoState extends State<PostCreato> {
                 SizedBox(
                     height: 60,
                     child: TextField(
-                        textAlign: TextAlign
-                            .start, // Center aligns the hint text horizontally.
+                        textAlign: TextAlign.start, // Center aligns the hint text horizontally.
                         textAlignVertical: TextAlignVertical.top,
                         expands: true,
                         maxLines: null,
@@ -118,19 +89,14 @@ class _PostCreatoState extends State<PostCreato> {
                         decoration: InputDecoration(
                             border: InputBorder.none,
                             hintText: 'What\'s your new medical update?',
-                            hintStyle: TextStyle(
-                                color: Colors.grey[900],
-                                fontWeight: FontWeight.bold,
-                                fontSize: 20),
-                            contentPadding: const EdgeInsets.symmetric(
-                                horizontal: 10, vertical: 0)))),
+                            hintStyle:
+                                TextStyle(color: Colors.grey[900], fontWeight: FontWeight.bold, fontSize: 20),
+                            contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 0)))),
                 GridView.builder(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 3,
-                      crossAxisSpacing: 5,
-                      mainAxisSpacing: 5),
+                      crossAxisCount: 3, crossAxisSpacing: 5, mainAxisSpacing: 5),
                   itemCount: singlePost.itemList.length,
                   itemBuilder: (BuildContext context, int index) {
                     //final item = singlePost.itemList[index];
@@ -230,16 +196,11 @@ class _PostCreatoState extends State<PostCreato> {
                           await singlePost.getImageGallery();
                           setState(() {});
                         },
-                        child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Icon(Icons.photo_library_outlined,
-                                  color: Colors.grey[900]),
-                              const SizedBox(width: 8),
-                              Text('Photo/Video',
-                                  style: TextStyle(
-                                      fontSize: 16, color: Colors.grey[900]))
-                            ]))),
+                        child: Row(mainAxisAlignment: MainAxisAlignment.start, children: [
+                          Icon(Icons.photo_library_outlined, color: Colors.grey[900]),
+                          const SizedBox(width: 8),
+                          Text('Photo/Video', style: TextStyle(fontSize: 16, color: Colors.grey[900]))
+                        ]))),
                 const Divider(height: 0, thickness: 1),
                 SizedBox(
                     height: 50,
@@ -248,15 +209,11 @@ class _PostCreatoState extends State<PostCreato> {
                           await singlePost.pickFiles();
                           setState(() {});
                         },
-                        child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Icon(Icons.attachment, color: Colors.grey[900]),
-                              const SizedBox(width: 8),
-                              Text('Documents',
-                                  style: TextStyle(
-                                      fontSize: 16, color: Colors.grey[900]))
-                            ]))),
+                        child: Row(mainAxisAlignment: MainAxisAlignment.start, children: [
+                          Icon(Icons.attachment, color: Colors.grey[900]),
+                          const SizedBox(width: 8),
+                          Text('Documents', style: TextStyle(fontSize: 16, color: Colors.grey[900]))
+                        ]))),
                 const Divider(height: 0, thickness: 1),
                 SizedBox(
                     height: 50,
@@ -266,16 +223,11 @@ class _PostCreatoState extends State<PostCreato> {
                           EnterHospitalName(context);
                           setState(() {});
                         },
-                        child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Icon(Icons.local_hospital,
-                                  color: Colors.grey[900]),
-                              const SizedBox(width: 8),
-                              Text('Hospital Name',
-                                  style: TextStyle(
-                                      fontSize: 16, color: Colors.grey[900]))
-                            ]))),
+                        child: Row(mainAxisAlignment: MainAxisAlignment.start, children: [
+                          Icon(Icons.local_hospital, color: Colors.grey[900]),
+                          const SizedBox(width: 8),
+                          Text('Hospital Name', style: TextStyle(fontSize: 16, color: Colors.grey[900]))
+                        ]))),
                 const Divider(height: 0, thickness: 1),
                 SizedBox(
                     height: 50,
@@ -283,15 +235,11 @@ class _PostCreatoState extends State<PostCreato> {
                         onPressed: () {
                           EnterConsultantName(context);
                         },
-                        child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Icon(Icons.person, color: Colors.grey[900]),
-                              const SizedBox(width: 8),
-                              Text('Consultant Name',
-                                  style: TextStyle(
-                                      fontSize: 16, color: Colors.grey[900]))
-                            ]))),
+                        child: Row(mainAxisAlignment: MainAxisAlignment.start, children: [
+                          Icon(Icons.person, color: Colors.grey[900]),
+                          const SizedBox(width: 8),
+                          Text('Consultant Name', style: TextStyle(fontSize: 16, color: Colors.grey[900]))
+                        ]))),
                 const Divider(height: 0, thickness: 1),
                 SizedBox(
                     height: 50,
@@ -300,18 +248,14 @@ class _PostCreatoState extends State<PostCreato> {
                           await singlePost.getImageCamera();
                           setState(() {});
                         },
-                        child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Icon(
-                                Icons.camera_alt,
-                                color: Colors.grey[900],
-                              ),
-                              const SizedBox(width: 8),
-                              Text('Camera',
-                                  style: TextStyle(
-                                      fontSize: 16, color: Colors.grey[900]))
-                            ]))),
+                        child: Row(mainAxisAlignment: MainAxisAlignment.start, children: [
+                          Icon(
+                            Icons.camera_alt,
+                            color: Colors.grey[900],
+                          ),
+                          const SizedBox(width: 8),
+                          Text('Camera', style: TextStyle(fontSize: 16, color: Colors.grey[900]))
+                        ]))),
                 const Divider(height: 0, thickness: 1),
                 SizedBox(
                     height: 50,
@@ -319,16 +263,11 @@ class _PostCreatoState extends State<PostCreato> {
                         onPressed: () {
                           EnterExpenditure(context);
                         },
-                        child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Icon(Icons.attach_money_rounded,
-                                  color: Colors.grey[900]),
-                              const SizedBox(width: 8),
-                              Text('Expenditure / ব্যয়',
-                                  style: TextStyle(
-                                      fontSize: 16, color: Colors.grey[900]))
-                            ]))),
+                        child: Row(mainAxisAlignment: MainAxisAlignment.start, children: [
+                          Icon(Icons.attach_money_rounded, color: Colors.grey[900]),
+                          const SizedBox(width: 8),
+                          Text('Expenditure / ব্যয়', style: TextStyle(fontSize: 16, color: Colors.grey[900]))
+                        ]))),
                 const Divider(height: 0, thickness: 1)
               ],
             ),

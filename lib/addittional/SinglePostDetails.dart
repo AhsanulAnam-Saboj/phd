@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -16,41 +18,43 @@ class SinglePostDetails {
   String Time = '';
   List<dynamic> itemList = [];
 
-  Future pickFiles() async {
-    final selectedFiles = await FilePicker.platform.pickFiles(
-      allowMultiple: true,
-      //allowedExtensions: ['pdf','doc','docx','txt'],
-    );
-    if (selectedFiles != null) {
-      var file;
-      for (file in selectedFiles.files) {
-        //File imageFile = File(file.path);
-        itemList.add(file);
-      }
-    } else {
-      return;
-    }
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  String? usremail = FirebaseAuth.instance.currentUser!.email;
+
+  Future<String> _uploadFileToFirebase(File file, String fileName, String fileType) async {
+    Reference storageReference = FirebaseStorage.instance.ref().child('Post/$usremail/$fileType/$fileName');
+    UploadTask uploadTask = storageReference.putFile(file);
+    TaskSnapshot taskSnapshot = await uploadTask.whenComplete(() => {});
+    String downloadUrl = await taskSnapshot.ref.getDownloadURL();
+    return downloadUrl;
   }
 
   Future getImageGallery() async {
-    List<XFile>? _selectedPhoto = await ImagePicker().pickMultiImage();
-
-    if (_selectedPhoto.length > 0) {
-      var file;
-      for (file in _selectedPhoto) {
-        //File imageFile = File(file.path);
-        itemList.add(file);
-      }
+    List<XFile>? selectedPhoto = await ImagePicker().pickMultiImage();
+    for (var file in selectedPhoto) {
+      File image = File(file.path);
+      String imageUrl = await _uploadFileToFirebase(image, file.name, 'images');
+      itemList.add(imageUrl);
     }
   }
 
   Future getImageCamera() async {
-    XFile? _selectedPhoto =
-        await ImagePicker().pickImage(source: ImageSource.camera);
+    XFile? selectedPhoto = await ImagePicker().pickImage(source: ImageSource.camera);
+    if (selectedPhoto!.path.isNotEmpty) {
+      File imageFile = File(selectedPhoto.path);
+      String imageUrl = await _uploadFileToFirebase(imageFile, selectedPhoto.name, 'images');
+      itemList.add(imageUrl);
+    }
+  }
 
-    if (_selectedPhoto!.path.isNotEmpty) {
-      File imageFile = File(_selectedPhoto.path);
-      itemList.add(imageFile);
+  Future pickFiles() async {
+    final selectedFiles = await FilePicker.platform.pickFiles(allowMultiple: true);
+    if (selectedFiles != null) {
+      for (var file in selectedFiles.files) {
+        File xFile = File(file.path!);
+        String fileUrl = await _uploadFileToFirebase(xFile, file.name, 'files');
+        itemList.add(fileUrl);
+      }
     }
   }
 
