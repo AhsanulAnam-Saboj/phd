@@ -7,11 +7,15 @@ class MenuWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return PopupMenuButton(itemBuilder: (context) => [
-      PopupMenuItem(onTap: () {
-        FirebaseAuth.instance.signOut();
-        Navigator.push(context, MaterialPageRoute(builder: (context) => LoginScreen()));
-      },child: Text('Logout'));
-    ],);
+    return PopupMenuButton(
+      itemBuilder: (context) => [
+        PopupMenuItem(
+            onTap: () {
+              FirebaseAuth.instance.signOut();
+              Navigator.push(context, MaterialPageRoute(builder: (context) => LoginScreen()));
+            },
+            child: const Text('Logout'))
+      ],
+    );
   }
 }
