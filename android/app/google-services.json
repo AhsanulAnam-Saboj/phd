@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "496963264302",
+    "project_id": "patientdetails-35e27",
+    "storage_bucket": "patientdetails-35e27.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:496963264302:android:b3603bf9fef4b5b49e24bf",
+        "android_client_info": {
+          "package_name": "com.example.phd"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBTb1zEH77VjABOSa8UnuaPXhfUMbo4r68"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
