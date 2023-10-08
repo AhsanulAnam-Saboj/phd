@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -9,6 +10,7 @@ import 'package:open_file/open_file.dart';
 import 'package:phd/addittional/CustomColors.dart';
 import 'package:phd/Actions/HospitalConsultant.dart';
 import 'package:phd/addittional/SinglePostDetails.dart';
+import 'package:phd/pages/Home.dart';
 
 class PostCreato extends StatefulWidget {
   const PostCreato({super.key});
@@ -59,9 +61,18 @@ class _PostCreatoState extends State<PostCreato> {
                 TextButton(
                   onPressed: () async {
                     singlePost.addDateTime();
+                    singlePost.addSinglePost();
+                    FirebaseFirestore.instance
+                        .collection("Users")
+                        .doc(usremail)
+                        .collection('Post')
+                        .add(singlePost.toFirestore());
                     singlePost.removeData();
-                    Navigator.pop(context);
-                    Navigator.pushReplacementNamed(context, '/home');
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => Home(),
+                        ));
                   },
                   child: const Text(
                     'Post',
@@ -158,10 +169,15 @@ class _PostCreatoState extends State<PostCreato> {
                       child: Stack(
                         fit: StackFit.expand,
                         children: [
-                          Image.file(
+                          CachedNetworkImage(
+                            imageUrl: singlePost.itemList[index],
+                            progressIndicatorBuilder: (context, url, progress) => CircularProgressIndicator(),
+                          ),
+                          //Image.network(singlePost.itemList[index]),
+                          /*Image.file(
                             singlePost.itemList[index],
                             fit: BoxFit.cover,
-                          ),
+                          ),*/
                           Positioned(
                             left: 87,
                             top: -10,

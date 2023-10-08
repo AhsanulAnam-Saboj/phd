@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
@@ -18,11 +19,23 @@ class SinglePostDetails {
   String Time = '';
   List<dynamic> itemList = [];
 
+  /*SinglePostDetails({
+    required this.HospitalName,
+    required this.itemList,
+    required this.ConsultantName,
+    required this.Day,
+    required this.Expenditure,
+    required this.Month,
+    required this.SinglePostText,
+    required this.Time,
+    required this.Year,
+  });*/
+
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   String? usremail = FirebaseAuth.instance.currentUser!.email;
 
   Future<String> _uploadFileToFirebase(File file, String fileName, String fileType) async {
-    Reference storageReference = FirebaseStorage.instance.ref().child('Post/$usremail/$fileType/$fileName');
+    Reference storageReference = FirebaseStorage.instance.ref().child('$usremail/$fileName');
     UploadTask uploadTask = storageReference.putFile(file);
     TaskSnapshot taskSnapshot = await uploadTask.whenComplete(() => {});
     String downloadUrl = await taskSnapshot.ref.getDownloadURL();
@@ -76,6 +89,16 @@ class SinglePostDetails {
     }
   }
 
+  addDateTime() {
+    var time = DateTime.now();
+
+    singlePost.Day = time.day.toString();
+    singlePost.Month = time.month.toString();
+    singlePost.Year = time.year.toString();
+
+    print('${singlePost.Day} / ${singlePost.Month} / ${singlePost.Year}');
+  }
+
   removeData() {
     singlePost.HospitalName = '';
     singlePost.ConsultantName = '';
@@ -104,14 +127,26 @@ class SinglePostDetails {
     post.add(aPost);
   }
 
-  addDateTime() {
-    var time = DateTime.now();
+  fromFirestore(
+    DocumentSnapshot<Map<String, dynamic>> snapshot,
+    SnapshotOptions? options,
+  ) {
+    final data = snapshot.data();
+    return singlePost.addSinglePost();
+  }
 
-    singlePost.Day = time.day.toString();
-    singlePost.Month = time.month.toString();
-    singlePost.Year = time.year.toString();
-
-    print('${singlePost.Day} / ${singlePost.Month} / ${singlePost.Year}');
+  Map<String, dynamic> toFirestore() {
+    return {
+      "file list": itemList,
+      "SinglePost txt": singlePost.SinglePostText,
+      "Hospital Name": singlePost.HospitalName,
+      "Consultant Name": singlePost.ConsultantName,
+      "Expenditure": singlePost.Expenditure,
+      "Day": singlePost.Day,
+      "Month": singlePost.Month,
+      "Year": singlePost.Year,
+      'time': DateTime.now(),
+    };
   }
 }
 
