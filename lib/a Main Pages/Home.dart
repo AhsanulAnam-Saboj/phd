@@ -208,6 +208,7 @@ class _HomeState extends State<Home> {
                           .collection('Users')
                           .doc(usrEml)
                           .collection('Post')
+                          .orderBy('time', descending: true)
                           .snapshots(),
                       builder: (context, snapshot) {
                         if (snapshot.connectionState == ConnectionState.waiting) {
