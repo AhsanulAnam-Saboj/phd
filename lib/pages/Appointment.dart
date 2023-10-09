@@ -22,7 +22,7 @@ class _AppointmentState extends State<Appointment> {
               backgroundColor: Colors.grey[900],
               centerTitle: true,
               title: const Row(children: [
-                Text('PHD', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20))
+                Text('PMHT', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20))
               ]),
               bottom: PreferredSize(
                 preferredSize: const Size.fromHeight(50.0),
@@ -78,7 +78,8 @@ class _AppointmentState extends State<Appointment> {
                                   Navigator.push(
                                       context, MaterialPageRoute(builder: (context) => LoginScreen()));
                                 },
-                                child: const Text('Logout'))
+                                child: const Text('Logout')
+                            )
                           ],
                         ),
                         const Text('Menu', style: TextStyle(color: Colors.white))

@@ -11,8 +11,8 @@ Future main() async {
 
   User? user = FirebaseAuth.instance.currentUser;
   if (user != null) {
-    runApp(const MaterialApp(debugShowCheckedModeBanner: false, title: "PHD App", home: Home()));
+    runApp(const MaterialApp(debugShowCheckedModeBanner: false, title: "PMHT", home: Home()));
   } else {
-    runApp(MaterialApp(debugShowCheckedModeBanner: false, title: "PHD App", home: LoginScreen()));
+    runApp(MaterialApp(debugShowCheckedModeBanner: false, title: "PMHT", home: LoginScreen()));
   }
 }

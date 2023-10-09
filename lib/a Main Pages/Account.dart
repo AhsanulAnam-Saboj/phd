@@ -5,6 +5,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:phd/addittional/UserInfo.dart';
 
+import '../Auth/loginpage.dart';
+import '../pages/Appointment.dart';
+import '../pages/Medicines.dart';
 import 'Home.dart';
 
 class Profile extends StatefulWidget {
@@ -63,7 +66,9 @@ class _ProfileState extends State<Profile> {
                   Column(
                     children: [
                       IconButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => Appointment()));
+                        },
                         color: Colors.white,
                         icon: const Icon(Icons.calendar_today, size: 25),
                       ),
@@ -78,7 +83,9 @@ class _ProfileState extends State<Profile> {
                   Column(
                     children: [
                       IconButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => Medicines()));
+                        },
                         color: Colors.white,
                         icon: const Icon(Icons.medical_services, size: 25),
                       ),
@@ -112,17 +119,20 @@ class _ProfileState extends State<Profile> {
                   ),
                   Column(
                     children: [
-                      IconButton(
-                        onPressed: () {},
-                        color: Colors.white,
-                        icon: const Icon(Icons.menu, size: 25),
+                      PopupMenuButton(
+                        icon: const Icon(Icons.menu, color: Colors.white, size: 25),
+                        itemBuilder: (context) => [
+                          PopupMenuItem(
+                              onTap: () {
+                                FirebaseAuth.instance.signOut();
+                                Navigator.push(
+                                    context, MaterialPageRoute(builder: (context) => LoginScreen()));
+                              },
+                              child: const Text('Logout')
+                          )
+                        ],
                       ),
-                      const Text(
-                        'Menu',
-                        style: TextStyle(
-                          color: Colors.white,
-                        ),
-                      ),
+                      const Text('Menu', style: TextStyle(color: Colors.white))
                     ],
                   ),
                 ],

@@ -8,9 +8,11 @@ import 'package:image_picker/image_picker.dart';
 import 'package:open_file/open_file.dart';
 import 'package:phd/addittional/CurrentUser.dart';
 import 'package:phd/a%20Main%20Pages/Account.dart';
+import 'package:phd/pages/Appointment.dart';
 
 import 'package:phd/pages/ClickTopost.dart';
 import 'package:phd/pages/EditPost.dart';
+import 'package:phd/pages/Medicines.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../Auth/loginpage.dart';
@@ -121,7 +123,7 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: MaterialApp(
-        title: 'PHD App',
+        title: 'PMHT',
         debugShowCheckedModeBanner: false,
         home: Scaffold(
             //resizeToAvoidBottomInset: false,
@@ -133,7 +135,7 @@ class _HomeState extends State<Home> {
                     backgroundColor: Colors.grey[900],
                     centerTitle: true,
                     title: const Row(children: [
-                      Text('PHD', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20))
+                      Text('PMHT  ', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20))
                     ]),
                     bottom: PreferredSize(
                       preferredSize: const Size.fromHeight(50.0),
@@ -150,7 +152,9 @@ class _HomeState extends State<Home> {
                           ]),
                           Column(children: [
                             IconButton(
-                              onPressed: () {},
+                              onPressed: () {
+                                Navigator.push(context, MaterialPageRoute(builder: (context) => Appointment()));
+                              },
                               color: Colors.white,
                               icon: const Icon(Icons.calendar_today, size: 25),
                             ),
@@ -158,7 +162,9 @@ class _HomeState extends State<Home> {
                           ]),
                           Column(children: [
                             IconButton(
-                              onPressed: () {},
+                              onPressed: () {
+                                Navigator.push(context, MaterialPageRoute(builder: (context) => Medicines()));
+                              },
                               color: Colors.white,
                               icon: const Icon(Icons.medical_services, size: 25),
                             ),
@@ -185,7 +191,8 @@ class _HomeState extends State<Home> {
                                         Navigator.push(
                                             context, MaterialPageRoute(builder: (context) => LoginScreen()));
                                       },
-                                      child: const Text('Logout'))
+                                      child: const Text('Logout')
+                                  )
                                 ],
                               ),
                               const Text('Menu', style: TextStyle(color: Colors.white))
@@ -314,8 +321,9 @@ class _HomeState extends State<Home> {
                                               final url = post.itemList[ind];
                                               final uri = Uri.parse(url);
 
+
                                               if (await canLaunchUrl(uri)) {
-                                                await launchUrl(uri);
+                                                await LaunchMode.platformDefault;
 
                                               } else {
                                                 // Handle the case where the URL cannot be launched.
@@ -334,9 +342,25 @@ class _HomeState extends State<Home> {
                                         }
                                         else{
 
-                                          return FileItem(
-                                            fileUrl: post.itemList[ind],
-                                            fileName: 'File ${ind + 1}',
+                                          return GestureDetector(
+
+                                            onTap: () async{
+                                              final url = post.itemList[ind];
+                                              final uri = Uri.parse(url);
+
+                                              if (await canLaunchUrl(uri)) {
+                                              await LaunchMode.platformDefault;
+
+                                              } else {
+                                              // Handle the case where the URL cannot be launched.
+                                              print(
+                                              'Could not launch URL: $url');
+                                              }
+                                            },
+                                            child: FileItem(
+                                              fileUrl: post.itemList[ind],
+                                              fileName: 'File ${ind + 1}',
+                                            ),
                                           );
                                         }
                                         /*FileItem(
