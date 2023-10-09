@@ -1,4 +1,3 @@
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
@@ -297,7 +296,6 @@ class _HomeState extends State<Home> {
                                       padding: const EdgeInsets.symmetric(horizontal: 8),
                                       child: Text(post.SinglePostText, style: const TextStyle(fontSize: 16)),
                                     ),
-                                    ///
                                     const SizedBox(height: 10),
                                     GridView.builder(
                                       gridDelegate:
@@ -308,7 +306,7 @@ class _HomeState extends State<Home> {
                                       itemBuilder: (context, ind) {
                                         print('${post.itemList[ind]} saboj');
 
-                                        if(isImage(post.itemList[ind])==true) {
+                                        if (isImage(post.itemList[ind]) == true) {
                                           return GestureDetector(
                                             onTap: () async {
                                               final url = post.itemList[ind];
@@ -316,24 +314,18 @@ class _HomeState extends State<Home> {
 
                                               if (await canLaunchUrl(uri)) {
                                                 await launchUrl(uri);
-
                                               } else {
                                                 // Handle the case where the URL cannot be launched.
-                                                print(
-                                                    'Could not launch URL: $url');
+                                                print('Could not launch URL: $url');
                                               }
                                             },
                                             child: CachedNetworkImage(
                                               imageUrl: post.itemList[ind],
-                                              placeholder: (context, url) =>
-                                                  const CircularProgressIndicator(),
-                                              errorWidget: (context, url,
-                                                  error) => Icon(Icons.error),
+                                              placeholder: (context, url) => const CircularProgressIndicator(),
+                                              errorWidget: (context, url, error) => Icon(Icons.error),
                                             ),
                                           );
-                                        }
-                                        else{
-
+                                        } else {
                                           return FileItem(
                                             fileUrl: post.itemList[ind],
                                             fileName: 'File ${ind + 1}',
@@ -443,8 +435,8 @@ class FileItem extends StatelessWidget {
   const FileItem({super.key, required this.fileUrl, required this.fileName});
 
   Future<void> _launchURL() async {
-    if (await canLaunch(fileUrl)) {
-      await launch(fileUrl);
+    if (await canLaunchUrl(Uri.parse(fileUrl))) {
+      await launchUrl(Uri.parse(fileUrl));
     } else {
       throw 'Could not launch $fileUrl';
     }
@@ -479,11 +471,17 @@ bool isImage(String url) {
   print(lowercaseUrl);
   // Check if the URL contains any of the image extensions
   var ind;
-  for(ind=0 ;ind <lowercaseUrl.length-4;ind++){
-    if(lowercaseUrl[ind] == 'j' && lowercaseUrl[ind+1] == 'p' && lowercaseUrl[ind+2]=='g')return true;
-    if(lowercaseUrl[ind] == 'j' && lowercaseUrl[ind+1] == 'p' && lowercaseUrl[ind+2]=='e' && lowercaseUrl[ind+2]=='g')return true;
-    if(lowercaseUrl[ind] == 'p' && lowercaseUrl[ind+1] == 'n' && lowercaseUrl[ind+2]=='g')return true;
-    if(lowercaseUrl[ind] == 'w' && lowercaseUrl[ind+1] == 'e' && lowercaseUrl[ind+2]=='b' && lowercaseUrl[ind+2]=='p')return true;
+  for (ind = 0; ind < lowercaseUrl.length - 4; ind++) {
+    if (lowercaseUrl[ind] == 'j' && lowercaseUrl[ind + 1] == 'p' && lowercaseUrl[ind + 2] == 'g') return true;
+    if (lowercaseUrl[ind] == 'j' &&
+        lowercaseUrl[ind + 1] == 'p' &&
+        lowercaseUrl[ind + 2] == 'e' &&
+        lowercaseUrl[ind + 3] == 'g') return true;
+    if (lowercaseUrl[ind] == 'p' && lowercaseUrl[ind + 1] == 'n' && lowercaseUrl[ind + 2] == 'g') return true;
+    if (lowercaseUrl[ind] == 'w' &&
+        lowercaseUrl[ind + 1] == 'e' &&
+        lowercaseUrl[ind + 2] == 'b' &&
+        lowercaseUrl[ind + 3] == 'p') return true;
   }
   return false;
 }

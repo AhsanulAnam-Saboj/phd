@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:phd/addittional/SinglePostDetails.dart';
+import 'package:phd/Actions/SinglePostDetails.dart';
 
 TextEditingController usedText = TextEditingController();
 

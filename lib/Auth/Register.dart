@@ -10,10 +10,10 @@ class Register extends StatefulWidget {
 }
 
 class _RegisterState extends State<Register> {
+  TextEditingController _username = TextEditingController();
   TextEditingController _emailId = TextEditingController();
   TextEditingController _enterpass = TextEditingController();
   TextEditingController _confirmpass = TextEditingController();
-  TextEditingController username = TextEditingController();
   bool passwordVisibility1 = true;
   bool passwordVisibility2 = true;
   bool isLoading = false;
@@ -23,18 +23,16 @@ class _RegisterState extends State<Register> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: Colors.grey[300],
-      appBar: AppBar(
-          title: Text('Register New Account'),
-          backgroundColor: Colors.grey[900]),
+      appBar: AppBar(title: const Text('Register New Account'), backgroundColor: Colors.grey[900]),
       body: SingleChildScrollView(
-        physics: BouncingScrollPhysics(),
+        physics: const BouncingScrollPhysics(),
         child: SafeArea(
           child: Center(
             child: Form(
               key: _formKey,
               child: Column(
                 children: [
-                  SizedBox(height: 50),
+                  const SizedBox(height: 50),
                   Icon(Icons.lock, color: Colors.grey[900], size: 100),
                   const SizedBox(height: 50),
                   Text('Hope you didn\'t face any serious problem!! ',
@@ -43,11 +41,10 @@ class _RegisterState extends State<Register> {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 25),
                     child: TextFormField(
-                      controller: username,
+                      controller: _username,
                       decoration: InputDecoration(
                         hintText: 'Enter your name',
-                        hintStyle:
-                            const TextStyle(color: Colors.grey, fontSize: 16),
+                        hintStyle: const TextStyle(color: Colors.grey, fontSize: 16),
                         enabledBorder: const OutlineInputBorder(
                           borderSide: BorderSide(color: Colors.white),
                         ),
@@ -116,16 +113,11 @@ class _RegisterState extends State<Register> {
                           filled: true,
                           suffixIcon: InkWell(
                             onTap: () {
-                              setState(() =>
-                                  passwordVisibility1 = !passwordVisibility1);
+                              setState(() => passwordVisibility1 = !passwordVisibility1);
                             },
                             focusNode: FocusNode(skipTraversal: true),
-                            child: Icon(
-                                passwordVisibility1
-                                    ? Icons.visibility
-                                    : Icons.visibility_off,
-                                color: Colors.black,
-                                size: 22),
+                            child: Icon(passwordVisibility1 ? Icons.visibility : Icons.visibility_off,
+                                color: Colors.black, size: 22),
                           )),
                       validator: (input) {
                         if (input!.length < 6) {
@@ -158,12 +150,8 @@ class _RegisterState extends State<Register> {
                                 passwordVisibility2 = !passwordVisibility2;
                               });
                             },
-                            child: Icon(
-                                passwordVisibility2
-                                    ? Icons.visibility
-                                    : Icons.visibility_off,
-                                color: Colors.black,
-                                size: 22),
+                            child: Icon(passwordVisibility2 ? Icons.visibility : Icons.visibility_off,
+                                color: Colors.black, size: 22),
                           )),
                       validator: (input) {
                         if (input != _confirmpass.text) {
@@ -185,22 +173,18 @@ class _RegisterState extends State<Register> {
                     onPressed: () async {
                       String _email = _emailId.text.trim();
                       String _password = _enterpass.text.trim();
-                      String _name = username.text.trim();
                       if (_formKey.currentState!.validate()) {
                         setState(() => isLoading = true);
                         try {
                           await FirebaseAuth.instance
-                              .createUserWithEmailAndPassword(
-                                  email: _email, password: _password);
+                              .createUserWithEmailAndPassword(email: _email, password: _password);
                         } catch (e) {
                           setState(() => isLoading = false);
                           return;
                         }
-                        FirebaseAuth.instance.currentUser!
-                            .updateDisplayName(_name);
+                        FirebaseAuth.instance.currentUser!.updateDisplayName(_username.text);
                         setState(() => isLoading = false);
-                        Navigator.push(context,
-                            MaterialPageRoute(builder: (context) => Home()));
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => const Home()));
                       }
                     },
                     child: const Text(
