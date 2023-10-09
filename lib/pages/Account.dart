@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:phd/addittional/UserInfo.dart';
 
 import '../a Main Pages/Home.dart';
+import 'Appointment.dart';
+import 'Medicines.dart';
 
 class Profile extends StatefulWidget {
   const Profile({super.key});
@@ -63,7 +65,9 @@ class _ProfileState extends State<Profile> {
                   Column(
                     children: [
                       IconButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => const Appointment()));
+                        },
                         color: Colors.white,
                         icon: const Icon(Icons.calendar_today, size: 25),
                       ),
@@ -78,7 +82,12 @@ class _ProfileState extends State<Profile> {
                   Column(
                     children: [
                       IconButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const Medicines()));
+                        },
                         color: Colors.white,
                         icon: const Icon(Icons.medical_services, size: 25),
                       ),

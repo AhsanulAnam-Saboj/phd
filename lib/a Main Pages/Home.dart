@@ -1,11 +1,9 @@
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:open_file/open_file.dart';
 import 'package:phd/addittional/CurrentUser.dart';
 import 'package:phd/a%20Main%20Pages/Account.dart';
 
@@ -13,7 +11,10 @@ import 'package:phd/pages/ClickTopost.dart';
 import 'package:phd/pages/EditPost.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../Actions/CurrentUser.dart';
 import '../Auth/loginpage.dart';
+import '../pages/Appointment.dart';
+import '../pages/Medicines.dart';
 
 String monthName(String m) {
   switch (m) {
@@ -124,7 +125,7 @@ class _HomeState extends State<Home> {
         title: 'PHD App',
         debugShowCheckedModeBanner: false,
         home: Scaffold(
-            //resizeToAvoidBottomInset: false,
+          //resizeToAvoidBottomInset: false,
             backgroundColor: Colors.grey[100],
             body: CustomScrollView(
               physics: const BouncingScrollPhysics(),
@@ -150,7 +151,9 @@ class _HomeState extends State<Home> {
                           ]),
                           Column(children: [
                             IconButton(
-                              onPressed: () {},
+                              onPressed: () {
+                                Navigator.push(context, MaterialPageRoute(builder: (context) => Appointment(),));
+                              },
                               color: Colors.white,
                               icon: const Icon(Icons.calendar_today, size: 25),
                             ),
@@ -158,14 +161,16 @@ class _HomeState extends State<Home> {
                           ]),
                           Column(children: [
                             IconButton(
-                              onPressed: () {},
+                              onPressed: () {
+                                Navigator.push(context, MaterialPageRoute(builder: (context) => const Medicines()));
+                              },
                               color: Colors.white,
                               icon: const Icon(Icons.medical_services, size: 25),
                             ),
                             const Text('Medicines', style: TextStyle(color: Colors.white))
                           ]),
                           Column(children: [
-                            IconButton(
+                            IconButton( 
                               onPressed: () {
                                 Navigator.push(context, MaterialPageRoute(builder: (context) => const Profile()));
                               },
@@ -204,147 +209,140 @@ class _HomeState extends State<Home> {
                 SliverToBoxAdapter(child: ClickToPost(currentUser: currentUser)),
                 SliverList(
                     delegate: SliverChildBuilderDelegate(childCount: 2, (context, index) {
-                  if (index == 0) {
-                    return StreamBuilder(
-                      stream: FirebaseFirestore.instance
-                          .collection('Users')
-                          .doc(usrEml)
-                          .collection('Post')
-                          .orderBy('time', descending: true)
-                          .snapshots(),
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState == ConnectionState.waiting) {
-                          return const Center(child: CircularProgressIndicator());
-                        }
-                        if (snapshot.hasData) {
-                          var data = snapshot.data!.docs;
+                      if (index == 0) {
+                        return StreamBuilder(
+                          stream: FirebaseFirestore.instance
+                              .collection('Users')
+                              .doc(usrEml)
+                              .collection('Post')
+                              .orderBy('time', descending: true)
+                              .snapshots(),
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState == ConnectionState.waiting) {
+                              return const Center(child: CircularProgressIndicator());
+                            }
+                            if (snapshot.hasData) {
+                              var data = snapshot.data!.docs;
 
-                          if (data.isEmpty) {
-                            return const Center(child: Text('No Post'));
-                          }
-                          Posts post = Posts();
+                              if (data.isEmpty) {
+                                return const Center(child: Text('No Post'));
+                              }
+                              Posts post = Posts();
 
-                          return ListView.builder(
-                            itemCount: data.length,
-                            shrinkWrap: true,
-                            physics: const BouncingScrollPhysics(),
-                            itemBuilder: (context, index) {
-                              var data = snapshot.data!.docs[index];
-                              post.itemList = data["file list"];
-                              post.SinglePostText = data["SinglePost txt"];
-                              post.HospitalName = data["Hospital Name"];
-                              post.ConsultantName = data["Consultant Name"];
-                              post.Expenditure = data["Expenditure"];
-                              post.Day = data["Day"];
-                              post.Month = data["Month"];
-                              post.Year = data["Year"];
+                              return ListView.builder(
+                                itemCount: data.length,
+                                shrinkWrap: true,
+                                physics: const BouncingScrollPhysics(),
+                                itemBuilder: (context, index) {
+                                  var data = snapshot.data!.docs[index];
+                                  post.itemList = data["file list"];
+                                  post.SinglePostText = data["SinglePost txt"];
+                                  post.HospitalName = data["Hospital Name"];
+                                  post.ConsultantName = data["Consultant Name"];
+                                  post.Expenditure = data["Expenditure"];
+                                  post.Day = data["Day"];
+                                  post.Month = data["Month"];
+                                  post.Year = data["Year"];
 
-                              return Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 5),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  return Padding(
+                                    padding: const EdgeInsets.symmetric(horizontal: 5),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                        Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                                          Text(usrNme!,
-                                              style: TextStyle(
-                                                  fontSize: 20,
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Colors.grey[900])),
-                                          const SizedBox(height: 6),
-                                          Text('${post.Day} ${monthName(post.Month)} ${post.Year}',
-                                              style: const TextStyle(overflow: TextOverflow.fade, fontSize: 12))
-                                        ]),
-                                        PopupMenuButton<String>(
-                                          icon: const Icon(Icons.more_horiz_outlined),
-                                          onSelected: (String newval) {
-                                            setState(() {
-                                              selectvalue = newval; // Update the selected value
-                                            });
-                                            if (selectvalue == 'Edit') {
-                                              Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                  builder: (context) => EditPost(post, index),
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                                              Text(usrNme!,
+                                                  style: TextStyle(
+                                                      fontSize: 20,
+                                                      fontWeight: FontWeight.bold,
+                                                      color: Colors.grey[900])),
+                                              const SizedBox(height: 6),
+                                              Text('${post.Day} ${monthName(post.Month)} ${post.Year}',
+                                                  style: const TextStyle(overflow: TextOverflow.fade, fontSize: 12))
+                                            ]),
+                                            PopupMenuButton<String>(
+                                              icon: const Icon(Icons.more_horiz_outlined),
+                                              onSelected: (String newval) {
+                                                setState(() {
+                                                  selectvalue = newval; // Update the selected value
+                                                });
+                                                if (selectvalue == 'Edit') {
+                                                  Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                      builder: (context) => EditPost(post, index),
+                                                    ),
+                                                  );
+                                                } else if (selectvalue == 'Delete') {
+                                                  FirebaseFirestore.instance
+                                                      .collection('Users')
+                                                      .doc(usrEml)
+                                                      .collection('Post')
+                                                      .doc(data.id)
+                                                      .delete();
+                                                }
+                                              },
+                                              itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+                                                // const PopupMenuItem<String>(
+                                                //   value: 'Edit', // Unique value for "Edit Post"
+                                                //   child: Text('Edit Post'),
+                                                // ),
+                                                const PopupMenuItem<String>(
+                                                  value: 'Delete', // Unique value for "Delete Post"
+                                                  child: Text('Delete Post'),
                                                 ),
-                                              );
-                                            } else if (selectvalue == 'Delete') {
-                                              FirebaseFirestore.instance
-                                                  .collection('Users')
-                                                  .doc(usrEml)
-                                                  .collection('Post')
-                                                  .doc(data.id)
-                                                  .delete();
-                                            }
-                                          },
-                                          itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
-                                            // const PopupMenuItem<String>(
-                                            //   value: 'Edit', // Unique value for "Edit Post"
-                                            //   child: Text('Edit Post'),
-                                            // ),
-                                            const PopupMenuItem<String>(
-                                              value: 'Delete', // Unique value for "Delete Post"
-                                              child: Text('Delete Post'),
+                                              ],
                                             ),
                                           ],
                                         ),
-                                      ],
-                                    ),
-                                    Divider(thickness: 1, height: 10, color: Colors.grey[400]),
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(horizontal: 8),
-                                      child: Text(post.SinglePostText, style: const TextStyle(fontSize: 16)),
-                                    ),
-                                    ///
-                                    const SizedBox(height: 10),
-                                    GridView.builder(
-                                      gridDelegate:
+                                        Divider(thickness: 1, height: 10, color: Colors.grey[400]),
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(horizontal: 8),
+                                          child: Text(post.SinglePostText, style: const TextStyle(fontSize: 16)),
+                                        ),
+                                        const SizedBox(height: 10),
+                                        GridView.builder(
+                                          gridDelegate:
                                           const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3),
-                                      shrinkWrap: true,
-                                      physics: const NeverScrollableScrollPhysics(),
-                                      itemCount: post.itemList.length,
-                                      itemBuilder: (context, ind) {
-                                        print('${post.itemList[ind]} saboj');
+                                          shrinkWrap: true,
+                                          physics: const NeverScrollableScrollPhysics(),
+                                          itemCount: post.itemList.length,
+                                          itemBuilder: (context, ind) {
+                                            print('${post.itemList[ind]} saboj');
 
-                                        if(isImage(post.itemList[ind])==true) {
-                                          return GestureDetector(
-                                            onTap: () async {
-                                              final url = post.itemList[ind];
-                                              final uri = Uri.parse(url);
+                                            if (isImage(post.itemList[ind]) == true) {
+                                              return GestureDetector(
+                                                onTap: () async {
+                                                  final url = post.itemList[ind];
+                                                  final uri = Uri.parse(url);
 
-                                              if (await canLaunchUrl(uri)) {
-                                                await launchUrl(uri);
-
-                                              } else {
-                                                // Handle the case where the URL cannot be launched.
-                                                print(
-                                                    'Could not launch URL: $url');
-                                              }
-                                            },
-                                            child: CachedNetworkImage(
-                                              imageUrl: post.itemList[ind],
-                                              placeholder: (context, url) =>
-                                                  const CircularProgressIndicator(),
-                                              errorWidget: (context, url,
-                                                  error) => Icon(Icons.error),
-                                            ),
-                                          );
-                                        }
-                                        else{
-
-                                          return FileItem(
-                                            fileUrl: post.itemList[ind],
-                                            fileName: 'File ${ind + 1}',
-                                          );
-                                        }
-                                        /*FileItem(
+                                                  if (await canLaunchUrl(uri)) {
+                                                    await launchUrl(uri);
+                                                  } else {
+                                                    // Handle the case where the URL cannot be launched.
+                                                    print('Could not launch URL: $url');
+                                                  }
+                                                },
+                                                child: CachedNetworkImage(
+                                                  imageUrl: post.itemList[ind],
+                                                  placeholder: (context, url) => const CircularProgressIndicator(),
+                                                  errorWidget: (context, url, error) => Icon(Icons.error),
+                                                ),
+                                              );
+                                            } else {
+                                              return FileItem(
+                                                fileUrl: post.itemList[ind],
+                                                fileName: 'File ${ind + 1}',
+                                              );
+                                            }
+                                            /*FileItem(
                                           fileUrl: post.itemList[ind],
                                           fileName: 'File ${ind + 1}',
                                         );*/
 
-                                        /*if (post.itemList[ind]
+                                            /*if (post.itemList[ind]
                                             is PlatformFile) {
                                           final extenSion = post
                                                   .itemList[ind]
@@ -401,34 +399,34 @@ class _HomeState extends State<Home> {
                                           return Text(
                                               '$index - $ind : ${post.itemList[ind]}');
                                         }*/
-                                      },
-                                    ),
-                                    Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        if (post.ConsultantName != '')
-                                          Text('Consultant Name : ${post.ConsultantName}',
-                                              style: TextStyle(fontSize: 16, color: Colors.grey[900])),
-                                        if (post.HospitalName != '')
-                                          Text('Hospital Name : ${post.HospitalName}',
-                                              style: TextStyle(fontSize: 16, color: Colors.grey[900])),
-                                        if (post.Expenditure != '')
-                                          Text('Total Expenditure : ${post.Expenditure} Tk',
-                                              style: TextStyle(fontSize: 16, color: Colors.grey[900])),
-                                        const Divider(color: Colors.black, thickness: 1),
+                                          },
+                                        ),
+                                        Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            if (post.ConsultantName != '')
+                                              Text('Consultant Name : ${post.ConsultantName}',
+                                                  style: TextStyle(fontSize: 16, color: Colors.grey[900])),
+                                            if (post.HospitalName != '')
+                                              Text('Hospital Name : ${post.HospitalName}',
+                                                  style: TextStyle(fontSize: 16, color: Colors.grey[900])),
+                                            if (post.Expenditure != '')
+                                              Text('Total Expenditure : ${post.Expenditure} Tk',
+                                                  style: TextStyle(fontSize: 16, color: Colors.grey[900])),
+                                            const Divider(color: Colors.black, thickness: 1),
+                                          ],
+                                        ),
                                       ],
                                     ),
-                                  ],
-                                ),
+                                  );
+                                },
                               );
-                            },
-                          );
-                        }
-                        return const Text('Error');
-                      },
-                    );
-                  }
-                }))
+                            }
+                            return const Text('Error');
+                          },
+                        );
+                      }
+                    }))
               ],
             )),
       ),
@@ -443,8 +441,8 @@ class FileItem extends StatelessWidget {
   const FileItem({super.key, required this.fileUrl, required this.fileName});
 
   Future<void> _launchURL() async {
-    if (await canLaunch(fileUrl)) {
-      await launch(fileUrl);
+    if (await canLaunchUrl(Uri.parse(fileUrl))) {
+      await launchUrl(Uri.parse(fileUrl));
     } else {
       throw 'Could not launch $fileUrl';
     }
@@ -479,11 +477,17 @@ bool isImage(String url) {
   print(lowercaseUrl);
   // Check if the URL contains any of the image extensions
   var ind;
-  for(ind=0 ;ind <lowercaseUrl.length-4;ind++){
-    if(lowercaseUrl[ind] == 'j' && lowercaseUrl[ind+1] == 'p' && lowercaseUrl[ind+2]=='g')return true;
-    if(lowercaseUrl[ind] == 'j' && lowercaseUrl[ind+1] == 'p' && lowercaseUrl[ind+2]=='e' && lowercaseUrl[ind+2]=='g')return true;
-    if(lowercaseUrl[ind] == 'p' && lowercaseUrl[ind+1] == 'n' && lowercaseUrl[ind+2]=='g')return true;
-    if(lowercaseUrl[ind] == 'w' && lowercaseUrl[ind+1] == 'e' && lowercaseUrl[ind+2]=='b' && lowercaseUrl[ind+2]=='p')return true;
+  for (ind = 0; ind < lowercaseUrl.length - 4; ind++) {
+    if (lowercaseUrl[ind] == 'j' && lowercaseUrl[ind + 1] == 'p' && lowercaseUrl[ind + 2] == 'g') return true;
+    if (lowercaseUrl[ind] == 'j' &&
+        lowercaseUrl[ind + 1] == 'p' &&
+        lowercaseUrl[ind + 2] == 'e' &&
+        lowercaseUrl[ind + 3] == 'g') return true;
+    if (lowercaseUrl[ind] == 'p' && lowercaseUrl[ind + 1] == 'n' && lowercaseUrl[ind + 2] == 'g') return true;
+    if (lowercaseUrl[ind] == 'w' &&
+        lowercaseUrl[ind + 1] == 'e' &&
+        lowercaseUrl[ind + 2] == 'b' &&
+        lowercaseUrl[ind + 3] == 'p') return true;
   }
   return false;
 }

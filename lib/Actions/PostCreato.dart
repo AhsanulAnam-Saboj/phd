@@ -18,7 +18,6 @@ class _PostCreatoState extends State<PostCreato> {
   String? usremail = FirebaseAuth.instance.currentUser!.email;
   TextEditingController usedText = TextEditingController();
 
-  /////////////////////////////////////////////////////////////////////////////////////////////////////
   Future<void> _storeFileUrlsInFirestore(List<String> fileUrls, String s) async {
     FirebaseFirestore.instance.collection('Users').doc(usremail).collection('Post').add({
       "file list": fileUrls,

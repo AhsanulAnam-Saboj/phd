@@ -1,10 +1,12 @@
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:phd/addittional/CurrentUser.dart';
 import 'package:phd/addittional/User.dart';
 import 'package:phd/Actions/PostCreato.dart';
 
 class ClickToPost extends StatefulWidget {
-  final User currentUser;
+  final usser currentUser;
   const ClickToPost({
     Key? key,
     required this.currentUser,
@@ -14,6 +16,7 @@ class ClickToPost extends StatefulWidget {
 }
 
 class _ClickToPostState extends State<ClickToPost> {
+  String? userImage = FirebaseAuth.instance.currentUser?.photoURL;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -27,7 +30,7 @@ class _ClickToPostState extends State<ClickToPost> {
                 CircleAvatar(
                   radius: 20.0,
                   backgroundColor: Colors.grey[100],
-                  backgroundImage: AssetImage(currentUser.imageurl),
+                  backgroundImage: CachedNetworkImageProvider("$userImage"),
                 ),
                 SizedBox(
                   width: 10,

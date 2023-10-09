@@ -1,9 +1,9 @@
 
-class User {
+class usser {
    String name;
    String imageurl;
 
-   User({
+   usser({
     required this.name,
     required this.imageurl,
   });
