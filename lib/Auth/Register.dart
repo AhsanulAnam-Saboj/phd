@@ -182,7 +182,11 @@ class _RegisterState extends State<Register> {
                           setState(() => isLoading = false);
                           return;
                         }
+<<<<<<< HEAD
                        await FirebaseAuth.instance.currentUser!.updateDisplayName(_username.text);
+=======
+                        FirebaseAuth.instance.currentUser!.updateDisplayName(_username.text);
+>>>>>>> origin/master
                         setState(() => isLoading = false);
                         Navigator.push(context, MaterialPageRoute(builder: (context) => const Home()));
                       }
