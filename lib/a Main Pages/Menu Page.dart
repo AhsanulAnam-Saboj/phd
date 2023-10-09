@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:phd/pages/loginpage.dart';
+import 'package:phd/Auth/loginpage.dart';
 
 class MenuWidget extends StatelessWidget {
   const MenuWidget({super.key});

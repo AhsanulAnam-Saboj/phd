@@ -2,19 +2,13 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:phd/pages/loginpage.dart';
+import 'package:phd/Auth/loginpage.dart';
 import 'package:phd/a%20Main%20Pages/Home.dart';
 import 'firebase_options.dart';
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  try {
-    await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  } catch (e) {
-    if (kDebugMode) {
-      print('\n \n Printing From App:  Error during Firebase initialization: \n $e \n \n \n');
-    }
-  }
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   User? user = FirebaseAuth.instance.currentUser;
   if (user != null) {

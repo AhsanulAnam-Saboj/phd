@@ -1,17 +1,19 @@
+
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:phd/Actions/CurrentUser.dart';
-import 'package:phd/a%20Main%20Pages/Menu%20Page.dart';
-import 'package:phd/pages/Account.dart';
+import 'package:open_file/open_file.dart';
+import 'package:phd/addittional/CurrentUser.dart';
+import 'package:phd/a%20Main%20Pages/Account.dart';
 
 import 'package:phd/pages/ClickTopost.dart';
 import 'package:phd/pages/EditPost.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../pages/loginpage.dart';
+import '../Auth/loginpage.dart';
 
 String monthName(String m) {
   switch (m) {
@@ -278,10 +280,10 @@ class _HomeState extends State<Home> {
                                             }
                                           },
                                           itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
-                                            const PopupMenuItem<String>(
-                                              value: 'Edit', // Unique value for "Edit Post"
-                                              child: Text('Edit Post'),
-                                            ),
+                                            // const PopupMenuItem<String>(
+                                            //   value: 'Edit', // Unique value for "Edit Post"
+                                            //   child: Text('Edit Post'),
+                                            // ),
                                             const PopupMenuItem<String>(
                                               value: 'Delete', // Unique value for "Delete Post"
                                               child: Text('Delete Post'),
@@ -305,10 +307,42 @@ class _HomeState extends State<Home> {
                                       itemBuilder: (context, ind) {
                                         print('${post.itemList[ind]} saboj');
 
-                                        return FileItem(
+                                        if(isImage(post.itemList[ind])==true) {
+                                          return GestureDetector(
+                                            onTap: () async {
+                                              final url = post.itemList[ind];
+                                              final uri = Uri.parse(url);
+
+                                              if (await canLaunchUrl(uri)) {
+                                                await launchUrl(uri);
+
+                                              } else {
+                                                // Handle the case where the URL cannot be launched.
+                                                print(
+                                                    'Could not launch URL: $url');
+                                              }
+                                            },
+                                            child: CachedNetworkImage(
+                                              imageUrl: post.itemList[ind],
+                                              placeholder: (context, url) =>
+                                                  const CircularProgressIndicator(),
+                                              errorWidget: (context, url,
+                                                  error) => Icon(Icons.error),
+                                            ),
+                                          );
+                                        }
+                                        else{
+
+                                          return FileItem(
+                                            fileUrl: post.itemList[ind],
+                                            fileName: 'File ${ind + 1}',
+                                          );
+                                        }
+                                        /*FileItem(
                                           fileUrl: post.itemList[ind],
                                           fileName: 'File ${ind + 1}',
-                                        );
+                                        );*/
+
                                         /*if (post.itemList[ind]
                                             is PlatformFile) {
                                           final extenSion = post
@@ -438,3 +472,27 @@ class FileItem extends StatelessWidget {
     );
   }
 }
+
+bool isImage(String url) {
+  final lowercaseUrl = url.toLowerCase();
+  print(lowercaseUrl);
+  // Check if the URL contains any of the image extensions
+  var ind;
+  for(ind=0 ;ind <lowercaseUrl.length-4;ind++){
+    if(lowercaseUrl[ind] == 'j' && lowercaseUrl[ind+1] == 'p' && lowercaseUrl[ind+2]=='g')return true;
+    if(lowercaseUrl[ind] == 'j' && lowercaseUrl[ind+1] == 'p' && lowercaseUrl[ind+2]=='e' && lowercaseUrl[ind+2]=='g')return true;
+    if(lowercaseUrl[ind] == 'p' && lowercaseUrl[ind+1] == 'n' && lowercaseUrl[ind+2]=='g')return true;
+    if(lowercaseUrl[ind] == 'w' && lowercaseUrl[ind+1] == 'e' && lowercaseUrl[ind+2]=='b' && lowercaseUrl[ind+2]=='p')return true;
+  }
+  return false;
+}
+// bool isImage(String url) {
+//   // Define a list of image file extensions you want to check for
+//   final imageExtensions = ['.jpg', '.jpeg', '.png', '.webp'];
+//
+//   // Convert the URL to lowercase for case-insensitive matching
+//   final lowercaseUrl = url.toLowerCase();
+//
+//   // Check if the URL contains any of the image extensions
+//   return imageExtensions.any((extension) => lowercaseUrl.endsWith(extension));
+// }

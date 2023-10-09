@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:open_file/open_file.dart';
 import 'package:phd/addittional/CustomColors.dart';
-import 'package:phd/Actions/HospitalConsultant.dart';
-import 'package:phd/addittional/SinglePostDetails.dart';
+import 'package:phd/addittional/HospitalConsultant.dart';
+import 'package:phd/Actions/SinglePostDetails.dart';
 
 import '../a Main Pages/Home.dart';
 

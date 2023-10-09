@@ -3,8 +3,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:open_file/open_file.dart';
-import 'package:phd/Actions/HospitalConsultant.dart';
-import 'package:phd/addittional/SinglePostDetails.dart';
+import 'package:phd/addittional/HospitalConsultant.dart';
+import 'package:phd/Actions/SinglePostDetails.dart';
 import 'package:phd/a%20Main%20Pages/Home.dart';
 
 class PostCreato extends StatefulWidget {
