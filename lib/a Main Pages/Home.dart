@@ -297,6 +297,7 @@ class _HomeState extends State<Home> {
                                       padding: const EdgeInsets.symmetric(horizontal: 8),
                                       child: Text(post.SinglePostText, style: const TextStyle(fontSize: 16)),
                                     ),
+                                    ///
                                     const SizedBox(height: 10),
                                     GridView.builder(
                                       gridDelegate:
